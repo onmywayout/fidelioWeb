@@ -21,7 +21,7 @@ window.onload = function()
     colorscale: 'Portland'
 
     //se actualiza la posicion inicial de la grafica y la variable anguloActual se incializa de acuerdo a esos valores
-    actualizarVistaCamara(1,1,1);
+    actualizarVistaCamara(0.75,0.75,0.75);
     anguloActual = 45;
     ultimaPosCamara = {"scene":{"camera":{"eye":{"x":1,"y":1,"z":1}}}};
     
@@ -32,7 +32,7 @@ window.onload = function()
         ultimaPosCamara = eventData;
     }); 
 
-    setInterval( moverVistaCelular, 100);
+    setInterval( moverVistaCelular, 10);
     
 }
 
@@ -105,7 +105,7 @@ function moverVistaCelular()
 {
 
     var rangoLateral = 10;
-    var rangoVertical = 2;
+    var rangoVertical = 10;
     var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
     // document.getElementById("info").innerHTML = ("deltaX: " + (deltax>rangoLateral||deltax<rangoLateral*-1) + "deltaZ: "  + (deltaz>rangoVertical||deltaz<rangoVertical*-1) );
     
@@ -114,16 +114,19 @@ function moverVistaCelular()
     else if(deltax<rangoLateral*-1)
         cambiarAngulo(true,-1)
         
- /*    if(deltaz>rango)
-        cambiarAngulo(false,1)
-    else if(deltaz<rango*-1)
+    // cambioEnZ = posInicialZ - az;
+        
+    if(deltaz>rangoVertical)
         cambiarAngulo(false,-1)
-     */
-    cambioEnZ = posInicialZ - az;
+    else if(deltaz<rangoVertical*-1)
+        cambiarAngulo(false,1)
+    
+        /* cambioEnZ = posInicialZ - az;
+    var rangoVertical = 2;
     if(cambioEnZ>rangoVertical)
         zoomIn(0.025);
     else if(cambioEnZ<rangoVertical*-1)
-        zoomIn(-0.025);
+        zoomIn(-0.025); */
 
     // boundingBoxCheck();
     
