@@ -107,7 +107,7 @@ function moverVistaCelular()
     var rangoLateral = 10;
     var rangoVertical = 2;
     var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
-    document.getElementById("info").innerHTML = ("deltaX: " + (deltax>rangoLateral||deltax<rangoLateral*-1) + "deltaZ: "  + (deltaz>rangoVertical||deltaz<rangoVertical*-1) );
+    // document.getElementById("info").innerHTML = ("deltaX: " + (deltax>rangoLateral||deltax<rangoLateral*-1) + "deltaZ: "  + (deltaz>rangoVertical||deltaz<rangoVertical*-1) );
     
     if(deltax>rangoLateral)
         cambiarAngulo(true,1)
