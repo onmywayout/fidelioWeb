@@ -1,0 +1,266 @@
+
+/*Header*/
+.posLogo
+{
+    display: inline-block;
+    margin-top: 27px;
+    width:195px;
+    height: 47px;
+    margin-left: -6px;
+    margin-bottom: 12px;
+    padding-bottom: 0px;
+}
+
+.posMenu
+{
+    /* display: inline-block; */
+    margin-top: 0px;
+    padding-top: 0px;
+    float: right;
+    /* margin-right: -8px; */
+    width: 31px;
+    height: 121px;;
+}
+.slogan
+{
+    /* display: inline-block; */
+    font-size: 12px;
+}
+
+/**
+    Cambia el tamaño del menu y el logo para la versión movil
+*/
+@media only screen and (max-width: 599px)
+{
+    .posMenu
+    {
+        width:42px;
+        height: 175px;
+         /* margin-right: -9px; */
+
+    }
+    .posLogo
+    {
+        margin-top: 67px;
+        margin-left: 0px;
+        width:160px;
+        height: 40px;
+        margin-bottom: 10px;
+        
+    }
+   
+    .slogan
+    {
+        font-size: 9.44px;
+    }
+}
+
+/*grafica*/
+.textoSobreGrafica
+{
+    min-width: 85%;
+    font-size: 20px;
+    font-weight: 300;
+    text-align: center;
+    position: absolute;
+    margin-top: 251px;
+    /* Esto centra el elemento horizontalmente */
+    left: 50%;
+    transform: translate(-50%, 0);
+    z-index: 1;
+}
+/* .centrarTextoSobreGrafica
+{
+    position: relative;
+    left: -50%;
+} */
+.subTextoSobreGrafica
+{
+    font-size: 12px;
+    font-weight: 400;
+    margin-top: 4px;
+}
+.mobileIco
+{
+    display: none;
+}
+.mouseIco
+{
+    margin-top: 12px;
+}
+/*
+Div que contiene la gráfica de plotly. Se le agrega fondo negro para que ocupe los borders
+*/
+.contenedorGrafica
+{
+    height: 433px;
+    width: 100%;
+    /* margin-left: -21px; */
+    /* margin-right: -8px; */
+    /* padding: 0; */
+    background-color: black;
+    margin-top:-20px;
+    overflow: hidden;
+    
+}
+#graficaPlotly
+{
+    width: 100%; 
+    height: 100%;
+    margin: 0%;
+    padding: 0;
+    overflow: hidden;
+    /* margin-top: -100px; */
+
+}
+@media only screen and (max-width: 599px)
+{
+
+    .mobileIco
+    {
+        display: block;
+        margin-top: 12px;
+    }
+    .mouseIco
+    {
+        display: none;
+    }
+    .contenedorGrafica
+    {
+        margin-top:8px;
+    }
+}
+
+/*texto debajo de la grafica*/
+p
+{
+    font-size: 15px;
+    font-weight: 300;
+    margin-bottom: 32px;
+    margin-top: 9px;
+    color: rgb(229, 229, 229)
+}
+
+.ajusteContainer
+{
+    
+    /* margin-right: 10px; */
+}
+
+
+
+.pais
+{
+    font-weight: 400;
+    font-size: 12px;
+    color: rgb(153,153,153);
+}
+.nombre
+{
+    margin-top: 4px;
+    margin-bottom: 4px;
+    font-weight: 300;
+    font-size: 16px;
+    color: rgb(242, 242, 242);
+}
+.telefono
+{
+    font-weight: 300;
+    font-size: 14px;
+    color: rgb(19, 123 , 189);
+    /* color:#137bbd; */
+}
+
+input
+{
+
+    margin-bottom: 16px;
+    width: 100%;
+    height: 32px;
+}
+
+input[type="text"], input[type="email"]
+{
+    font-style: italic;
+    font-weight: 300i;
+    font-size: 14px;
+    
+}
+
+input[type="submit"]
+{
+    background-color: rgb(19, 123 , 189);
+    border-style: none;
+    color: white;
+}
+/* Cambiar el color del placeholder de los inputs */
+*::-webkit-input-placeholder {
+    color: rgb(178, 178, 178 );
+}
+*::-moz-placeholder {    /* FF 19+ */
+    color: rgb(178, 178, 178 );
+}
+*:-ms-input-placeholder {
+    /* IE 10+ */
+    color: rgb(178, 178, 178 );
+}
+
+/**
+Hace que el input telefono, enviar y correo electronico
+ aparezcan separados cuando no esta en vista movil
+*/
+@media only screen and (min-width: 599px)
+{
+    .correcionAncho
+    {
+        max-width: 75%;
+    }
+    .tamanoInput
+    {
+        /* -width: 100%; */
+        width: calc(100% - 5px);
+    }
+    .alinearDerecha
+    {
+        /* max-width: calc(100%-50px); */
+        float: right;
+    }
+    correccionAlto
+    {
+        margin-top: 2px;
+    }
+
+}
+
+body
+{
+    color: white;
+    background-color: rgb(41,41,41);
+    font-family: Roboto;
+    margin-left: 0px;
+    margin-top: 0px;
+    margin-right: 0px; 
+}
+footer
+{
+    font-weight: 300;
+    font-size: 14px;
+    color: rgb(19, 123 , 189);
+}
+hr
+{
+    border: 0 none;
+    height: 1px;
+    background-color: rgb(75,75,75);
+    margin-top: 1px;
+}
+
+@media only screen and (max-width: 599px)
+{
+    hr
+    {
+        border-color:  rgb(75,75,75);
+        border-style: solid;
+        margin-top: 19px;
+    }
+}

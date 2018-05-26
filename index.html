@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400" rel="stylesheet">
+    <title>Fidelio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <!-- <script src="js/plotly-gl3d-latest.min.js"></script> -->
+    <script src="js/plotlyjs-bundle.js"></script>
+    <script src="datos/figure.js"></script>
+        <!-- <script src="js/require.js"></script>  -->
+    <!-- <script data-main="js/main" src="js/require.js"></script> -->
+        <script src="js/main.js"></script>
+    <!-- <script src="js/bundle.js"></script> -->
+</head>
+<body>
+    <div class="posLogo">    
+        <img id="logo" src="assets/fidelio logo.svg" width="100%" height="100%" />
+    </div>
+    <div class="posMenu">
+         <img src="assets/menu2.png" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"/>
+    </div>
+    
+    <div class="slogan">Digital Problem Solvers</div>
+  <!--   <div id="alfa"></div>
+    <div id="beta"></div>
+    <div id="gamma"></div>
+    <div id="info"></div> -->
+    <br>
+    <br>
+    <!-- Sección de gráfica de datos -->
+<div class="textoSobreGrafica" id="textoSobreGrafica">
+        Existimos porque lo digital es escencialmente humano
+        <div class="subTextoSobreGrafica">
+                <u>Data: lorem ipsum sit ameta</u>
+                <br>
+                <div class="mobileIco">
+                    <img src="assets/mobileico.png"/>
+                </div>
+                <div class="mouseIco">
+                    <img src="assets/mouseico.png"/>
+                </div>
+        </div>
+</div>
+    <div class="contenedorGrafica" >
+        <div id="graficaPlotly" class="plotly-div"></div>
+    </div>
+    
+    <script type="text/javascript">
+/*  gd = document.getElementById('graficaPlotly');
+    var resizeDebounce = null;
+    Plotly.plot(gd,  {
+        data: figure.data,
+        layout: figure.layout,
+        frames: figure.frames,
+        });
+        colorscale: 'Portland'
+
+ */
+
+
+
+    </script>
+
+    <!-- Sección formulario -->
+    <br>
+    <div class="container-flow ajusteContainer">
+        <div class="row no-gutters ">
+            <div class="col-md-6">
+                     <p> Si llegaste hasta aquí, ya sabes qué hacemos.</p>
+                    <div class="pais">Panamá</div>
+                    <div class="nombre">Santiago Sánchez B.</div>
+                    <div class="telefono">+507 6476 0928</div>
+                    <br>
+                    <div class="pais">Colombia</div>
+                    <div class="nombre">Diego Fernando Camacho G.</div>
+                    <div class="telefono">+57 316 8342297</div><br>
+                
+            </div>
+            <div class="col-md-6">
+                <div class="correcionAncho">
+                    <div class="correccionAlto">
+                        <p>Déjanos tus datos y hablemos de negocios.</p>
+                    </div>
+                    
+                    <form>
+                        <div class="row no-gutters">
+                            <div class="col-md-12">
+                                    <input type="text" placeholder="  Nombre"><br>
+                            </div>
+                            
+                        </div>
+                        <div class="row no-gutters">
+                                <div class="col-md-6">
+                                    <div class="tamanoInput">
+                                        <input type="text"  placeholder="  Teléfono"><br>
+                                    </div>
+                                </div>                           
+                                <div class="col-md-6">
+                                    <div class="tamanoInput alinearDerecha">
+                                        <input type="email" placeholder="  Correo electrónico"><br>
+                                    </div>
+                                </div>                           
+                        </div>
+                        <div class="row no-gutters">
+                                <div class="col-md-6">
+                                    <div class="tamanoInput">
+                                        <input type="submit" style="width:100%;" value="ENVIAR">
+                                    </div>                           
+                                </div>                           
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    
+</body>
+<footer>
+    <hr>
+    <br>
+    Fidelio Digital© 2018 All Rights Reserved
+
+</footer>    
+
+</body>
+</html>
