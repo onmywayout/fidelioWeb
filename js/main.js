@@ -23,7 +23,7 @@ window.onload = function()
     //se actualiza la posicion inicial de la grafica y la variable anguloActual se incializa de acuerdo a esos valores
     actualizarVistaCamara(0.75,0.75,0.75);
     anguloActual = 45;
-    ultimaPosCamara = {"scene":{"camera":{"eye":{"x":1,"y":1,"z":1}}}};
+    ultimaPosCamara = {"scene":{"camera":{"eye":{"x":0.75,"y":0.75,"z":0.75}}}};
     
     gd.on('plotly_relayout', function(eventData) 
     {
