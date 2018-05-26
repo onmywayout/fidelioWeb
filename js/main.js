@@ -87,7 +87,7 @@ if (window.DeviceMotionEvent != undefined)
 	}
 } 
 
-//setInterval(actualizarValores,50);
+setInterval(actualizarValores,50);
 
 function actualizarValores()
 {
