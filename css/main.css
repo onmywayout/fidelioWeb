@@ -17,7 +17,7 @@
     margin-top: 0px;
     padding-top: 0px;
     float: right;
-    /* margin-right: -8px; */
+    margin-right: -9px;
     width: 31px;
     height: 121px;;
 }
@@ -94,8 +94,8 @@ Div que contiene la gráfica de plotly. Se le agrega fondo negro para que ocupe 
 .contenedorGrafica
 {
     height: 433px;
-    width: 100%;
-    /* margin-left: -21px; */
+    width: calc(100% + 16px);
+    margin-left: -7px;
     /* margin-right: -8px; */
     /* padding: 0; */
     background-color: black;
@@ -237,9 +237,9 @@ body
     color: white;
     background-color: rgb(41,41,41);
     font-family: Roboto;
-    margin-left: 0px;
     margin-top: 0px;
-    margin-right: 0px; 
+    /* margin-left: 0px; */
+    /* margin-right: 0px;  */
 }
 footer
 {
