@@ -9,6 +9,7 @@ var figure = {
             t: 0,
             pad: 1
         },
+        // hovermode: false,
         paper_bgcolor:"black",
         plot_bgcolor: "black",
         title: ""

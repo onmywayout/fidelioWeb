@@ -1,4 +1,3 @@
-
 /*Header*/
 .posLogo
 {
@@ -130,6 +129,12 @@ Div que contiene la gráfica de plotly. Se le agrega fondo negro para que ocupe 
         margin-top:8px;
     }
 }
+/*Oculta los botones de Plotly de la gráfica*/
+.modebar
+{
+    /* display: none !important; */
+}
+
 
 /*texto debajo de la grafica*/
 p

@@ -1,17 +1,45 @@
-// var ultimaPosCamara = {"scene.camera":{"up":{"x":0,"y":0,"z":1},"center":{"x":0,"y":0,"z":0},"eye":{"x":1.5000000000000002,"y":1.2500000000000002,"z":1.2499999999999998}}};
-//se guardan los parametros actuales de la posicion de la cama
-var ultimaPosCamara ;
 //la gráfica de plotly
 var gd;
-
-/**
+/**cada cuantos ms se actualiza la vista */
+var tasaActualizacion = 10;
+/*
  * Inicialización de la gráfica
  */
 window.onload = function()
 {
-    gd = document.getElementById('graficaPlotly');
-    window.setTimeout(esconderTextoGrafica, 3000);
     
+    inicializarGrafica();
+    
+    gd.on('plotly_relayout', function(eventData) 
+    {
+        // console.log("Event:" + JSON.stringify(eventData));
+        // console.log("Event:" + "x: " + eventData.points[0].x  + "y: " + eventData.points[0].y  + "z: " + eventData.points[0].z );
+        // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
+        //en cada movimiento de camara con el dedo (movil), se recalcula el angulo de vision
+        calcularAnguloActual();
+    }); 
+    gd.on('plotly_click', function(eventData) 
+    {
+        // console.log("Event:" + JSON.stringify(eventData));
+        // console.log("Event:" + "x: " + eventData.points[0].x  + "y: " + eventData.points[0].y  + "z: " + eventData.points[0].z );
+        // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
+        //en cada movimiento de camara con el dedo (movil), se recalcula el angulo de vision
+        calcularAnguloActual();
+    }); 
+
+// setInterval( moverVistaCelular, tasaActualizacion);
+
+}
+
+/**
+ * Si inicia la gráfica y
+ * se personaliza la con cosas que no pueden configurarse desde el archivo inicial
+ * */
+function inicializarGrafica()
+{
+    gd = document.getElementById('graficaPlotly');
+    window.setTimeout(esconderTextoGrafica, 2000);
+
     var resizeDebounce = null;
     Plotly.plot(gd,  {
         data: figure.data,
@@ -21,21 +49,41 @@ window.onload = function()
     colorscale: 'Portland'
 
     //se actualiza la posicion inicial de la grafica y la variable anguloActual se incializa de acuerdo a esos valores
-    actualizarVistaCamara(0.75,0.75,0.75);
+    // actualizarVistaCamara(0.75,0.75,0.75);
     anguloActual = 45;
-    ultimaPosCamara = {"scene":{"camera":{"eye":{"x":0.75,"y":0.75,"z":0.75}}}};
-    
-    gd.on('plotly_relayout', function(eventData) 
+
+    var styling = 
     {
-        console.log("Event:" + JSON.stringify(eventData));
-        // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
-        ultimaPosCamara = eventData;
-    }); 
+        showgrid: false, //grid de fondo
+        zeroline: false, //ejes
+        ticks: '', //lineas de los rangos
+        showticklabels: false, //numeros de los rangos
+        showspikes:false, //quita las lineas que aparecen on hover
+        title: "" //quita las etiquetas de eje (x, y, z)
+    };
 
-    setInterval( moverVistaCelular, 10);
-    
+ var update = {
+                scene:{
+                    xaxis:styling,
+                    yaxis:styling,
+                    zaxis:styling,
+                    camera: {
+                        eye: {x: 0.75, y: 0.75, z: 0.75 } 
+                    }
+                },
+            };
+
+        Plotly.relayout(gd, update);
+        
+    /*
+        hace click al boton (oculto por css) dr orbital rotation.
+        esta rotación es más atractiva y además no causa errores al mover la gráfica programática
+        existe un caso que cuanod la gráfica esta en turntable mode y se llega al limite del eje z los
+        valores de x, y, z cambian algo erraticamente
+    */
+   document.querySelector('[data-val="orbit"]').click();
+   
 }
-
 /**
  * Esconde el texto sobre la gráfica
  */
@@ -52,28 +100,28 @@ function resizePlot()
 {
     var bb = gd.getBoundingClientRect();
     Plotly.relayout(gd, {
-        width: bb.width,
-        height: bb.height
-    });
+    width: bb.width,
+    height: bb.height
+});
 }
 
 
 /**
  *--------------------------------   Funciones relacionadas con el acelerometro---------------------------------------------
- * 
- */
+* 
+*/
 
 
 var deltax = 0, deltay = 0, deltaz = 0,
-    ax = 0, ay = 0, az =0;
+ax = 0, ay = 0, az =0;
 var posInicialZ = undefined; //la posicion del celular en el eje z( vertical) cuando se abrió la pg
-	
+
 var sphere = document.getElementById("sphere");
 
 if (window.DeviceMotionEvent != undefined) 
 {
-	window.ondevicemotion = function(e) {
-		ax = event.accelerationIncludingGravity.x ;
+    window.ondevicemotion = function(e) {
+        ax = event.accelerationIncludingGravity.x ;
         ay = event.accelerationIncludingGravity.y ;
         az = event.accelerationIncludingGravity.z ;
         //https://developer.mozilla.org/en-US/docs/Web/Guide/Events/Using_device_orientation_with_3D_transforms
@@ -83,8 +131,8 @@ if (window.DeviceMotionEvent != undefined)
 
         if(!posInicialZ)
             posInicialZ = az;
-        
-	}
+        moverVistaCelular();
+    }
 } 
 
 // setInterval(actualizarValores,50);
@@ -108,7 +156,7 @@ function moverVistaCelular()
     var rangoVertical = 10;
     var landscapeOrientation = window.innerWidth/window.innerHeight > 1;
     // document.getElementById("info").innerHTML = ("deltaX: " + (deltax>rangoLateral||deltax<rangoLateral*-1) + "deltaZ: "  + (deltaz>rangoVertical||deltaz<rangoVertical*-1) );
-    
+
     if(deltax>rangoLateral)
         cambiarAngulo(true,1)
     else if(deltax<rangoLateral*-1)
@@ -120,7 +168,7 @@ function moverVistaCelular()
         cambiarAngulo(false,-1)
     else if(deltaz<rangoVertical*-1)
         cambiarAngulo(false,1)
-    
+
         /* cambioEnZ = posInicialZ - az;
     var rangoVertical = 2;
     if(cambioEnZ>rangoVertical)
@@ -129,73 +177,44 @@ function moverVistaCelular()
         zoomIn(-0.025); */
 
     // boundingBoxCheck();
-    
+
     /* sphere.style.top = y + "px";
     sphere.style.left = x + "px";
-     */
+        */
 }
-
-function boundingBoxCheck(){
-	if (x<0) { x = 0; vx = -vx; }
-	if (y<0) { y = 0; vy = -vy; }
-	if (x>document.documentElement.clientWidth-20) { x = document.documentElement.clientWidth-20; vx = -vx; }
-	if (y>document.documentElement.clientHeight-20) { y = document.documentElement.clientHeight-20; vy = -vy; }
-	
-}
-
-/*
-Alfa (Eje Z): Eje X gráfica
-Beta (Eje X): Zoom
-Gamma (Eje y):  Eje Y gráfica
-
- scene:{
-            camera: {
-          center: { x: icenter[0], y: icenter[1], z: icenter[2] }, 
-          eye: {x: ieye[0], y: ieye[1], z: ieye[2] }, 
-           up: { x: iup[0], y: iup[1], z: iceiupnter[2] }
-            }
-        },
-    };
-
-
-*/
-
 
 var stop = false;
 function pruebaHipotesis(a,b)
 {
     if(!stop)
-    {
-        setTimeout(() => {
-            cambiarAngulo(a, b);
-            pruebaHipotesis(a,b)
-        }, 100);
-    }
+        {
+            setTimeout(() => {
+                cambiarAngulo(a, b);
+                pruebaHipotesis(a,b)
+            }, 100);
+        }
 }
 
 /**
  * funciones relacionadas con el posicionamiento de la camara
  * ---------------------------------------------------------------------------------------------------------------------*
  */
+function imprimirUltimaPosicionCamara()
+{
+    // console.log("Event:" + "x: " +  gd.layout.scene.camera.eye.x  + "y: " +  gd.layout.scene.camera.eye.y  + "z: " +  gd.layout.scene.camera.eye.z );
 
+}
 /**
  * Recibe un valor para alejar (+) o acercar (-) la camara
  * @param {double} zoom Valor positivo o negativo
  */
 function zoomIn(zoom)
 {
-    if(ultimaPosCamara["scene.camera"])
-    {
-        x0 = ultimaPosCamara["scene.camera"].eye.x;
-        y0 = ultimaPosCamara["scene.camera"].eye.y;
-        z0 = ultimaPosCamara["scene.camera"].eye.z;
-    }
-    else
-    {
-        x0 = ultimaPosCamara.scene.camera.eye.x;
-        y0 = ultimaPosCamara.scene.camera.eye.y;
-        z0 = ultimaPosCamara.scene.camera.eye.z;
-    }
+
+    x0 = gd.layout.scene.camera.eye.x;
+    y0 = gd.layout.scene.camera.eye.y;
+    z0 = gd.layout.scene.camera.eye.z;
+
 
     xn = x0 + zoom;
     yn = y0 + zoom;
@@ -204,11 +223,77 @@ function zoomIn(zoom)
     xn = xn < 0 ? x0:xn 
     yn = yn < 0 ? y0:yn 
     zn = zn < 0 ? z0:zn 
-    
-     actualizarVistaCamara(xn,yn,zn)
+
+    actualizarVistaCamara(xn,yn,zn)
 }
 
-var anguloActual;
+window.onerror = function (message, file, line, col, error) {
+    alert("Error occurred: " + error.message + "\rline:" + line);
+    return false;
+ };
+
+
+
+ function calcularAnguloActual()
+{
+    //corrige un mensaje error que se da en la primera carga
+    if(!gd.layout.scene.camera)
+    {
+        // alert(JSON.stringify(gd.layout.scene));
+        return
+    }
+    // imprimirUltimaPosicionCamara();
+    x0 = gd.layout.scene.camera.eye.x;
+    y0 = gd.layout.scene.camera.eye.y;
+    z0 = gd.layout.scene.camera.eye.z;    
+
+    /* anguloActualY = Math.asin(x0/hipotenusaY)* (180/Math.PI);
+    anguloActualZ = Math.asin(x0/hipotenusaZ)* (180/Math.PI);
+    */
+    anguloActualY = Math.atan(y0/x0);
+    anguloActualZ = Math.atan(z0/x0);
+
+    //hallamos la hipotenusa  del triangulo formado por X y Y
+    //    hipotenusaY = Math.sqrt(x0*x0 + y0*y0);
+    hipotenusaY = x0/Math.cos(anguloActualY);
+    //hallamos la hipotenusa  del triangulo formado por X y Z
+    //    hipotenusaZ = Math.sqrt(x0*x0 + z0*z0);
+    hipotenusaZ = x0/Math.cos(anguloActualZ);
+
+    hipotenusaXY = y0/Math.cos(anguloActualY);
+    hipotenusaXZ = z0/Math.cos(anguloActualZ);
+    actualXY = hipotenusaY*Math.sin(anguloActualY);
+    actualXZ = hipotenusaZ*Math.sin(anguloActualZ);
+
+    actualY = hipotenusaY*Math.sin(anguloActualY);
+    actualZ = hipotenusaZ*Math.sin(anguloActualZ);
+    console.log(" Angulo XY : " + cortar(anguloActualY) +" Angulo XZ : " + cortar(anguloActualZ) );
+    tolerancia = 0.1;
+    if(Math.abs(actualY - y0) > tolerancia)
+    {
+        console.log(" nuevaPos X : " + cortar(x0) +" nuevaPos Y : " + cortar(actualY) + " nuevaPos Z : " + cortar(actualZ));
+        console.log("--- Y0 : " + y0 + "  YN : " + actualY);
+        console.log("--- XY0 : " + x0 + "  XYN : " + actualXY);
+        console.log("--- XZ0 : " + x0 + "  XZN : " + actualXZ);
+    }
+    if(Math.abs(actualZ - z0) > tolerancia)
+    {
+        console.log(" nuevaPos X : " + cortar(x0) +" nuevaPos Y : " + cortar(actualY) + " nuevaPos Z : " + cortar(actualZ));
+        console.log("--- Z0 : " + z0 + "  ZN : " + actualZ);
+        console.log("--- XY0 : " + x0 + "  XYN : " + actualXY);
+        console.log("--- XZ0 : " + x0 + "  XZN : " + actualXZ);
+    }
+
+}
+
+function cortar(b)
+{
+    return ("" + b).substring(0,7);
+
+}
+
+var anguloActualY;
+var anguloActualZ;
 /**
  * se calculan las nuevas coordenadas X,Y o X,Z
  * Para hacerlo se tiene en cuenta que el punto desde donde se esta viendo la gráfica es como si se estuviera dentor d euna esfera
@@ -224,34 +309,34 @@ function cambiarAngulo(ejeY, direccion)
     if (direccion!=1 && direccion != -1) //Chequeo de valores
         direccion = 1
 
-    if(ultimaPosCamara["scene.camera"])
+    imprimirUltimaPosicionCamara();
+  /*   if(!gd.layout.scene.camera)
     {
-        x0 = ultimaPosCamara["scene.camera"].eye.x;
-        y0 = ultimaPosCamara["scene.camera"].eye.y;
-        z0 = ultimaPosCamara["scene.camera"].eye.z;
-    }
-    else
-    {
-        x0 = ultimaPosCamara.scene.camera.eye.x;
-        y0 = ultimaPosCamara.scene.camera.eye.y;
-        z0 = ultimaPosCamara.scene.camera.eye.z;
-    }
+        alert(JSON.stringify(gd.layout.scene));
+        return
+    } */
+        x0 = gd.layout.scene.camera.eye.x;
+        y0 = gd.layout.scene.camera.eye.y;
+        z0 = gd.layout.scene.camera.eye.z;
+
 
     hipotenusa = 0;
-    cambioAngulo = 0.1;
+    // cambioAngulo = 0.001;
+    cambioAngulo = 0.05;
 
     a0 = x0;
     b0 = ejeY? y0: z0; //nos movemos en el eje Y (izq - Der) o en el Z (arriba- abajo)
-    
+    anguloActual = ejeY? anguloActualY: anguloActualZ;/*  */
+
     //hallamos la hipotenusa  del triangulo formado por X y Y
     hipotenusa = Math.sqrt(a0*a0 + b0*b0)
     /* console.log("a0: " + a0 + " - b0: " + b0);
     console.log("hipotenusa: " + hipotenusa);
     console.log("Nuevo Angulo: " + (anguloActual - cambioAngulo));
-     */
+        */
     //ahora hallamos la nueva posicion de los puntos X Y Y habiendolos movido 0.1 grados (cambioAngulo)
-    an = hipotenusa*Math.sin(anguloActual + (cambioAngulo*direccion));
-    bn = hipotenusa*Math.cos(anguloActual + (cambioAngulo*direccion));
+    bn = hipotenusa*Math.sin(anguloActual + (cambioAngulo*direccion));
+    an = hipotenusa*Math.cos(anguloActual + (cambioAngulo*direccion));
     anguloActual = anguloActual  + cambioAngulo*direccion;
     /* if(isNaN(an+bn))
         stop = true; */
@@ -260,7 +345,7 @@ function cambiarAngulo(ejeY, direccion)
         actualizarVistaCamara(an,bn,z0);
     else
         actualizarVistaCamara(an,y0,bn);
-   
+
 }
 /**
  * Hace set de las coordenadas x,y,z desde donde se esta viendo la gráfica
@@ -271,17 +356,42 @@ function cambiarAngulo(ejeY, direccion)
  */
 function actualizarVistaCamara(xa,ya,za)
 {
-    var update = {
-            scene:{
-                camera: {
-                         eye: {x: xa, y: ya, z: za } 
-                        }
-                    },
-                };
+var update = {
+        scene:{
+            camera: {
+                        eye: {x: xa, y: ya, z: za } 
+                    }
+                },
+            };
 
-    Plotly.relayout(gd, update);
+Plotly.relayout(gd, update);
 }
 
+
+function cambiarStyling()
+{
+    var styling = {rangeslider : {
+        autorange: true,
+        showgrid: false,
+        zeroline: false,
+        showline: false,
+        autotick: true,
+        ticks: '',
+        showticklabels: false,
+        gridcolor: 'black',
+        zerolinecolor: 'black',
+        linecolor: 'black',
+    }};
+    
+    var update = 
+    {
+        
+            xaxis:styling,
+            yaxis:styling,
+            zaxis:styling,
+    
+    }
+}
 
 /**
  * En desuso
@@ -290,12 +400,12 @@ function actualizarVistaCamara(xa,ya,za)
  * @param {*} obj2 
  */
 const deepMergeSum = (obj1, obj2) => {
-    return Object.keys(obj1).reduce((acc, key) => {
-      if (typeof obj2[key] === 'object') {
-        acc[key] = deepMergeSum(obj1[key], obj2[key]);
-      } else if (obj2.hasOwnProperty(key) && !isNaN(parseFloat(obj2[key]))) {
-        acc[key] = obj1[key] - obj2[key]
-      }
-      return acc;
-    }, {});
-  };
+return Object.keys(obj1).reduce((acc, key) => {
+    if (typeof obj2[key] === 'object') {
+    acc[key] = deepMergeSum(obj1[key], obj2[key]);
+    } else if (obj2.hasOwnProperty(key) && !isNaN(parseFloat(obj2[key]))) {
+    acc[key] = obj1[key] - obj2[key]
+    }
+    return acc;
+}, {});
+};
