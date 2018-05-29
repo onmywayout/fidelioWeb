@@ -127,12 +127,15 @@ Div que contiene la gráfica de plotly. Se le agrega fondo negro para que ocupe 
     .contenedorGrafica
     {
         margin-top:8px;
+        /* hace que no se pueda hacer click a la gráfica */
+        pointer-events: none; 
+        
     }
 }
 /*Oculta los botones de Plotly de la gráfica*/
 .modebar
 {
-    /* display: none !important; */
+    display: none !important;
 }
 
 

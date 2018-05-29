@@ -10,21 +10,24 @@ window.onload = function()
     
     inicializarGrafica();
     
-    gd.on('plotly_relayout', function(eventData) 
+    //en cada movimiento de camara con el dedo (movil), se recalcula el angulo de vision
+    gd.on('plotly_selected', function(eventData) 
     {
-        // console.log("Event:" + JSON.stringify(eventData));
-        // console.log("Event:" + "x: " + eventData.points[0].x  + "y: " + eventData.points[0].y  + "z: " + eventData.points[0].z );
-        // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
-        //en cada movimiento de camara con el dedo (movil), se recalcula el angulo de vision
         calcularAnguloActual();
+        console.log("plotly__click");
     }); 
-    gd.on('plotly_click', function(eventData) 
+    gd.on('plotly_afterplot', function() 
+    {
+        calcularAnguloActual();
+        console.log("plotly__click");
+    }); 
+    gd.on('plotly_restyle', function(eventData) 
     {
         // console.log("Event:" + JSON.stringify(eventData));
         // console.log("Event:" + "x: " + eventData.points[0].x  + "y: " + eventData.points[0].y  + "z: " + eventData.points[0].z );
         // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
-        //en cada movimiento de camara con el dedo (movil), se recalcula el angulo de vision
         calcularAnguloActual();
+        console.log("plotly__relayout");
     }); 
 
 // setInterval( moverVistaCelular, tasaActualizacion);
@@ -38,7 +41,7 @@ window.onload = function()
 function inicializarGrafica()
 {
     gd = document.getElementById('graficaPlotly');
-    window.setTimeout(esconderTextoGrafica, 2000);
+    window.setTimeout(esconderTextoGrafica, 4000);
 
     var resizeDebounce = null;
     Plotly.plot(gd,  {
@@ -62,27 +65,36 @@ function inicializarGrafica()
         title: "" //quita las etiquetas de eje (x, y, z)
     };
 
+/*
+        para futuras modificaciones: 
+        orbital rotation es más atractiva y además no causa errores al mover la gráfica programáticamente
+        existe un caso que cuanod la gráfica esta en turntable mode y se llega al limite del eje z los
+        valores de x, y, z cambian algo erraticamente
+    */
+   //En modo movil se selecciona el modo zoom. En modo pantalla completa se selecciona orbital
+    var movil = window.matchMedia("(max-width: 599px)")
+    var dragmode;
+   if(movil.matches)
+      dragmode = "zoom";
+    else
+      dragmode = "orbital";
+   var zoomInicial = 0.45;
+
  var update = {
+                dragmode: dragmode,
                 scene:{
                     xaxis:styling,
                     yaxis:styling,
                     zaxis:styling,
                     camera: {
-                        eye: {x: 0.75, y: 0.75, z: 0.75 } 
+                        eye: {x: zoomInicial, y:zoomInicial, z: zoomInicial } 
                     }
                 },
             };
 
         Plotly.relayout(gd, update);
         
-    /*
-        hace click al boton (oculto por css) dr orbital rotation.
-        esta rotación es más atractiva y además no causa errores al mover la gráfica programática
-        existe un caso que cuanod la gráfica esta en turntable mode y se llega al limite del eje z los
-        valores de x, y, z cambian algo erraticamente
-    */
-   document.querySelector('[data-val="orbit"]').click();
-   
+    
 }
 /**
  * Esconde el texto sobre la gráfica
@@ -201,7 +213,8 @@ function pruebaHipotesis(a,b)
  */
 function imprimirUltimaPosicionCamara()
 {
-    // console.log("Event:" + "x: " +  gd.layout.scene.camera.eye.x  + "y: " +  gd.layout.scene.camera.eye.y  + "z: " +  gd.layout.scene.camera.eye.z );
+    if(gd.layout.scene.camera)
+    console.log("Event:" + "x: " +  gd.layout.scene.camera.eye.x  + "y: " +  gd.layout.scene.camera.eye.y  + "z: " +  gd.layout.scene.camera.eye.z );
 
 }
 /**
@@ -294,6 +307,7 @@ function cortar(b)
 
 var anguloActualY;
 var anguloActualZ;
+var cambioAngulo = 0.025;
 /**
  * se calculan las nuevas coordenadas X,Y o X,Z
  * Para hacerlo se tiene en cuenta que el punto desde donde se esta viendo la gráfica es como si se estuviera dentor d euna esfera
@@ -306,6 +320,8 @@ var anguloActualZ;
  */
 function cambiarAngulo(ejeY, direccion)
 {
+    calcularAnguloActual();
+    
     if (direccion!=1 && direccion != -1) //Chequeo de valores
         direccion = 1
 
@@ -322,7 +338,7 @@ function cambiarAngulo(ejeY, direccion)
 
     hipotenusa = 0;
     // cambioAngulo = 0.001;
-    cambioAngulo = 0.05;
+    
 
     a0 = x0;
     b0 = ejeY? y0: z0; //nos movemos en el eje Y (izq - Der) o en el Z (arriba- abajo)
