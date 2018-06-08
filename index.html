@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-120068903-1"></script>
+    <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+          
+            gtag('config', 'UA-120068903-1');
+    </script>
+          
     <meta charset="utf-8" />
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400" rel="stylesheet">
     <title>Fidelio</title>
@@ -49,9 +58,10 @@
         </div>
 </div>
     <div class="contenedorGrafica" >
+        <div class="overlayGrafica" >
+        </div>
         <div id="graficaPlotly" class="plotly-div"></div>
     </div>
-    
     <script type="text/javascript">
 
     </script>
@@ -77,22 +87,22 @@
                         <p>Déjanos tus datos y hablemos de negocios.</p>
                     </div>
                     
-                    <form>
+                    <form  onclick="enviarForm()" onsubmit="return false">
                         <div class="row no-gutters">
                             <div class="col-md-12">
-                                    <input type="text" placeholder="  Nombre"><br>
+                                    <input id="nombre" type="text" placeholder="  Nombre" required><br>
                             </div>
                             
                         </div>
                         <div class="row no-gutters">
                                 <div class="col-md-6">
                                     <div class="tamanoInput">
-                                        <input type="text"  placeholder="  Teléfono"><br>
+                                        <input  id="telefono" type="text"  placeholder="  Teléfono"><br>
                                     </div>
                                 </div>                           
                                 <div class="col-md-6">
                                     <div class="tamanoInput alinearDerecha">
-                                        <input type="email" placeholder="  Correo electrónico"><br>
+                                        <input id="email" type="email" placeholder="  Correo electrónico" required><br>
                                     </div>
                                 </div>                           
                         </div>

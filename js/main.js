@@ -14,12 +14,12 @@ window.onload = function()
     gd.on('plotly_selected', function(eventData) 
     {
         calcularAnguloActual();
-        console.log("plotly__click");
+        // console.log("plotly__click");
     }); 
     gd.on('plotly_afterplot', function() 
     {
         calcularAnguloActual();
-        console.log("plotly__click");
+        // console.log("plotly__click");
     }); 
     gd.on('plotly_restyle', function(eventData) 
     {
@@ -27,8 +27,9 @@ window.onload = function()
         // console.log("Event:" + "x: " + eventData.points[0].x  + "y: " + eventData.points[0].y  + "z: " + eventData.points[0].z );
         // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
         calcularAnguloActual();
-        console.log("plotly__relayout");
+        // console.log("plotly__relayout");
     }); 
+
 
 // setInterval( moverVistaCelular, tasaActualizacion);
 
@@ -41,7 +42,7 @@ window.onload = function()
 function inicializarGrafica()
 {
     gd = document.getElementById('graficaPlotly');
-    window.setTimeout(esconderTextoGrafica, 4000);
+    // window.setTimeout(esconderTextoGrafica, 4000);
 
     var resizeDebounce = null;
     Plotly.plot(gd,  {
@@ -49,7 +50,7 @@ function inicializarGrafica()
         layout: figure.layout,
         frames: figure.frames,
     });
-    colorscale: 'Portland'
+    // colorscale: 'Portland'
 
     //se actualiza la posicion inicial de la grafica y la variable anguloActual se incializa de acuerdo a esos valores
     // actualizarVistaCamara(0.75,0.75,0.75);
@@ -65,22 +66,24 @@ function inicializarGrafica()
         title: "" //quita las etiquetas de eje (x, y, z)
     };
 
-/*
+/*  
         para futuras modificaciones: 
         orbital rotation es más atractiva y además no causa errores al mover la gráfica programáticamente
         existe un caso que cuanod la gráfica esta en turntable mode y se llega al limite del eje z los
         valores de x, y, z cambian algo erraticamente
     */
-   //En modo movil se selecciona el modo zoom. En modo pantalla completa se selecciona orbital
+     //En modo movil se selecciona el modo zoom. En modo pantalla completa se selecciona orbital
     var movil = window.matchMedia("(max-width: 599px)")
     var dragmode;
-   if(movil.matches)
-      dragmode = "zoom";
-    else
-      dragmode = "orbital";
-   var zoomInicial = 0.45;
+    if(movil.matches)
+        dragmode = "zoom";
+        else
+        dragmode = "orbital";
+    var zoomInicial = 0.35;
 
- var update = {
+    var update = {
+                // "colorscale": "Portland"
+                
                 dragmode: dragmode,
                 scene:{
                     xaxis:styling,
@@ -93,9 +96,50 @@ function inicializarGrafica()
             };
 
         Plotly.relayout(gd, update);
-        
-    
+        //inicia el movimiento automatico de la gráfica en el eje Y
+        //se debe hacer el llamado con una funcion anónima ()=> pq setInterval solo recibe referencias de funciones
+
+        setInterval(()=>rotacionAutomatica(true,1),100);
 }
+
+function enviarForm()
+{
+
+        var nombre = $("#nombre").val(),
+            telefono = $("#telefono").val();
+            email = $("#email").val(),
+            tiempo = milliAMinutosSegundos(performance.now());
+
+            if (!nombre) //la función se llama al cargar la página con campos vacios
+                return;
+
+        $.ajax({
+            type: "POST",
+            url: 'https://ky0weuz3m5.execute-api.us-east-1.amazonaws.com/production',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                'nombre': nombre,
+                'telefono': telefono,
+                'email': email,
+                'tiempoEnPagina' : tiempo
+            }),
+            success: function(res){
+                console.log('Gracias. Nos pondremos en contacto contigo pronto.');
+            },
+            error: function(){
+                console.log('Error');
+            }
+        });
+        return;
+
+}
+
+function milliAMinutosSegundos(millis) 
+{
+    var minutes = Math.floor(millis / 60000);
+    var seconds = ((millis % 60000) / 1000).toFixed(0);
+    return minutes + " m : " + (seconds < 10 ? '0' : '') + seconds + " s";
+  }
 /**
  * Esconde el texto sobre la gráfica
  */
@@ -143,7 +187,8 @@ if (window.DeviceMotionEvent != undefined)
 
         if(!posInicialZ)
             posInicialZ = az;
-        moverVistaCelular();
+            //esta linea habilita o deshabilita que la gráfica se mueva con el movimiento del celular
+        // moverVistaCelular();
     }
 } 
 
@@ -196,14 +241,15 @@ function moverVistaCelular()
 }
 
 var stop = false;
-function pruebaHipotesis(a,b)
+function rotacionAutomatica(a,b)
 {
+    cambioAngulo = 0.015;
+    cambiarAngulo(a, b);
     if(!stop)
         {
-            setTimeout(() => {
-                cambiarAngulo(a, b);
-                pruebaHipotesis(a,b)
-            }, 100);
+            // setTimeout(() => {
+                // rotacionAutomatica(a,b)
+                // }, 100);
         }
 }
 
@@ -250,7 +296,7 @@ window.onerror = function (message, file, line, col, error) {
  function calcularAnguloActual()
 {
     //corrige un mensaje error que se da en la primera carga
-    if(!gd.layout.scene.camera)
+    if(!gd.layout || !gd.layout.scene.camera)
     {
         // alert(JSON.stringify(gd.layout.scene));
         return
@@ -280,8 +326,10 @@ window.onerror = function (message, file, line, col, error) {
 
     actualY = hipotenusaY*Math.sin(anguloActualY);
     actualZ = hipotenusaZ*Math.sin(anguloActualZ);
-    console.log(" Angulo XY : " + cortar(anguloActualY) +" Angulo XZ : " + cortar(anguloActualZ) );
+    // console.log(" Angulo XY : " + cortar(anguloActualY) +" Angulo XZ : " + cortar(anguloActualZ) );
     tolerancia = 0.1;
+    //debug de errores
+    /*
     if(Math.abs(actualY - y0) > tolerancia)
     {
         console.log(" nuevaPos X : " + cortar(x0) +" nuevaPos Y : " + cortar(actualY) + " nuevaPos Z : " + cortar(actualZ));
@@ -296,6 +344,7 @@ window.onerror = function (message, file, line, col, error) {
         console.log("--- XY0 : " + x0 + "  XYN : " + actualXY);
         console.log("--- XZ0 : " + x0 + "  XZN : " + actualXZ);
     }
+    */
 
 }
 
@@ -307,7 +356,7 @@ function cortar(b)
 
 var anguloActualY;
 var anguloActualZ;
-var cambioAngulo = 0.025;
+var cambioAngulo = 0.04;
 /**
  * se calculan las nuevas coordenadas X,Y o X,Z
  * Para hacerlo se tiene en cuenta que el punto desde donde se esta viendo la gráfica es como si se estuviera dentor d euna esfera
@@ -325,7 +374,7 @@ function cambiarAngulo(ejeY, direccion)
     if (direccion!=1 && direccion != -1) //Chequeo de valores
         direccion = 1
 
-    imprimirUltimaPosicionCamara();
+    // imprimirUltimaPosicionCamara();
   /*   if(!gd.layout.scene.camera)
     {
         alert(JSON.stringify(gd.layout.scene));
