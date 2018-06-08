@@ -72,7 +72,7 @@ p <- function(d){
         , y = ~Value.y
         , z = ~Value
         , color = ~Region
-        , text = ~Country
+        , text = ~paste0(Country)
         , hoverinfo = "text"
         # , marker = list(color='green')
         # , showlegend = F
