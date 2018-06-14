@@ -224,13 +224,20 @@ input[type="submit"]
     color: rgb(178, 178, 178 );
 }
 
+
+.ocultar
+{
+    display: none;
+}
+
 /**
 Hace que el input telefono, enviar y correo electronico
  aparezcan separados cuando no esta en vista movil
 */
 @media only screen and (min-width: 599px)
 {
-    .correcionAncho
+
+    #formulario
     {
         max-width: 75%;
     }
@@ -251,6 +258,26 @@ Hace que el input telefono, enviar y correo electronico
 
 }
 
+
+#btnEnviarOtroMensaje
+{
+    background-color: transparent;
+    color: white;
+    width: 100%;
+    border-radius: 2px;
+    height: 32px;
+    border-color: rgb(19, 123 , 189);
+    border-style: groove;
+    margin-top: 77px;
+}
+
+@media only screen and (max-width: 599px)
+{
+    #btnEnviarOtroMensaje
+    {
+        margin-top: 0px;
+    }
+}
 body
 {
     color: white;

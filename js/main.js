@@ -7,11 +7,14 @@ var tasaActualizacion = 10;
  */
 window.onload = function()
 {
+    gd = document.getElementById('graficaPlotly');
     
     inicializarGrafica();
+    // Plotly.d3.csv("https://onmywayout.github.io/fidelioWeb/datos/data_xyz.csv", function(data){ cargarGraficaJson(data) } );
+
     
     //en cada movimiento de camara con el dedo (movil), se recalcula el angulo de vision
-    gd.on('plotly_selected', function(eventData) 
+  /*   gd.on('plotly_selected', function(eventData) 
     {
         calcularAnguloActual();
         // console.log("plotly__click");
@@ -28,12 +31,144 @@ window.onload = function()
         // console.log("Cambio:" + JSON.stringify(deepMergeSum (ultimaPosCamara,eventData)));
         calcularAnguloActual();
         // console.log("plotly__relayout");
-    }); 
+    });  */
 
 
 // setInterval( moverVistaCelular, tasaActualizacion);
 
 }
+
+
+function cargarGraficaJson(allRows)
+{
+    // window.setTimeout(esconderTextoGrafica, 4000);
+    console.log(allRows);
+    var x = [], y = [], z = [];
+    
+    for (var i=0; i<allRows.length; i++)
+    {
+        row = allRows[i];
+        x.push( row['x'] );
+        y.push( row['y'] );
+        z.push( row['z'] );
+    }
+        console.log( 'X',x, 'Y',y, 'Z',z );
+    
+    var traces = [{
+            x: x,
+            y: y,
+            z: z
+        }];
+
+
+
+
+    var figureX = {
+            "frames": [], 
+            "layout": 
+            {
+                margin: {
+                    l: 0,
+                    r: 0,
+                    b: 0,
+                    t: 0,
+                    pad: 1
+                },
+                // hovermode: false,
+                paper_bgcolor:"black",
+                plot_bgcolor: "black",
+                title: ""
+            }, 
+            "data": [
+                        {
+                            "marker": {   
+                                 colorscale: [
+                                                ['0.0','rgb(19,123,189)'],
+                                                ['0.066','rgb(18,117,180)'],
+                                                ['0.132','rgb(18,112,171)'],
+                                                ['0.198','rgb(18,106,162)'],
+                                                ['0.264','rgb(18,101,154)'],
+                                                ['0.33','rgb(18,95,145)'],
+                                                ['0.396','rgb(18,90,136)'],
+                                                ['0.462','rgb(18,84,127)'],
+                                                ['0.528','rgb(18,79,119)'],
+                                                ['0.594','rgb(18,73,110)'],
+                                                ['0.66','rgb(18,68,101)'],
+                                                ['0.726','rgb(18,62,92)'],
+                                                ['0.792','rgb(18,57,84)'],
+                                                ['0.858','rgb(18,51,75)'],
+                                                ['0.924','rgb(18,46,68)'],
+                                                ['1.0','rgb(18,41,58)']
+                                            ],
+                                    }, 
+                            "mode": "markers",
+                                "x": x,
+                                "y": y,
+                                "z" : z,
+                                "type": "scatter3d"
+                        }
+                    ]   
+}
+        // Plotly.newPlot(gd, traces,
+        // {title: 'Plotting CSV data from AJAX call'});
+
+    var resizeDebounce = null;
+    Plotly.plot(gd,  {
+        data: figureX.data,
+        layout: figureX.layout,
+        frames: figureX.frames,
+    });
+    // colorscale: 'Portland'
+
+    //se actualiza la posicion inicial de la grafica y la variable anguloActual se incializa de acuerdo a esos valores
+    // actualizarVistaCamara(0.75,0.75,0.75);
+
+    var styling = 
+    {
+        showgrid: false, //grid de fondo
+        zeroline: false, //ejes
+        ticks: '', //lineas de los rangos
+        showticklabels: false, //numeros de los rangos
+        showspikes:false, //quita las lineas que aparecen on hover
+        title: "" //quita las etiquetas de eje (x, y, z)
+    };
+
+/*  
+        para futuras modificaciones: 
+        orbital rotation es más atractiva y además no causa errores al mover la gráfica programáticamente
+        existe un caso que cuanod la gráfica esta en turntable mode y se llega al limite del eje z los
+        valores de x, y, z cambian algo erraticamente
+    */
+     //En modo movil se selecciona el modo zoom. En modo pantalla completa se selecciona orbital
+    var movil = window.matchMedia("(max-width: 599px)")
+    var dragmode;
+    if(movil.matches)
+        dragmode = "zoom";
+        else
+        dragmode = "orbital";
+    var zoomInicial = 0.35;
+
+    var update = {
+                // "colorscale": "Portland"
+                
+                dragmode: dragmode,
+                scene:{
+                    xaxis:styling,
+                    yaxis:styling,
+                    zaxis:styling,
+                    camera: {
+                        eye: {x: zoomInicial, y:zoomInicial, z: zoomInicial } 
+                    }
+                },
+            };
+
+        // Plotly.relayout(gd, update);
+        //inicia el movimiento automatico de la gráfica en el eje Y
+        //se debe hacer el llamado con una funcion anónima ()=> pq setInterval solo recibe referencias de funciones
+
+        // setInterval(()=>rotacionAutomatica(true,1),100);
+}
+
 
 /**
  * Si inicia la gráfica y
@@ -102,15 +237,19 @@ function inicializarGrafica()
         setInterval(()=>rotacionAutomatica(true,1),100);
 }
 
+/**
+ * Enviar formulario de contacto y mostrar respuesta
+ */
 function enviarForm()
 {
 
+   
         var nombre = $("#nombre").val(),
             telefono = $("#telefono").val();
             email = $("#email").val(),
             tiempo = milliAMinutosSegundos(performance.now());
 
-            if (!nombre) //la función se llama al cargar la página con campos vacios
+            if (!nombre) //la función se llama sola al cargar la página con campos vacios
                 return;
 
         $.ajax({
@@ -123,15 +262,29 @@ function enviarForm()
                 'email': email,
                 'tiempoEnPagina' : tiempo
             }),
-            success: function(res){
-                console.log('Gracias. Nos pondremos en contacto contigo pronto.');
+            success: function(res)
+            {
+                $("#formulario").addClass("ocultar");
+                $("#respuesta").removeClass("ocultar");
             },
-            error: function(){
-                console.log('Error');
+            error: function(res)
+            {
+                alert("Lo lamentamos mucho. Ha ocurrido un error");
+                console.log(res);
             }
         });
         return;
 
+}
+
+/**
+ * Vuelve a habilitar el form para que se pueda enviar otro mensaje despues del primero
+ */
+function mostrarForm()
+{
+    $("#formulario").removeClass("ocultar");
+    $("#respuesta").addClass("ocultar");
+    return;
 }
 
 function milliAMinutosSegundos(millis) 
