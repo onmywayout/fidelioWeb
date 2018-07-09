@@ -15,6 +15,9 @@
     <title>Fidelio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     
+    <link rel="shortcut icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="assets/favicon/favicon.ico" type="image/x-icon">
+    
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <link rel="stylesheet" type="text/css" href="css/bootstrap-grid.min.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -45,15 +48,15 @@
     <br>
     <!-- Sección de gráfica de datos -->
 <div class="textoSobreGrafica" id="textoSobreGrafica">
-        Existimos porque lo digital es escencialmente humano
+        Existimos porque lo digital es esencialmente humano
         <div class="subTextoSobreGrafica">
-                <u>Data: lorem ipsum sit ameta</u>
+                <u></u>
                 <br>
                 <div class="mobileIco">
-                    <img src="assets/mobileico.png"/>
+                    <!-- <img src="assets/mobileico.png"/> -->
                 </div>
                 <div class="mouseIco">
-                    <img src="assets/mouseico.png"/>
+                    <!-- <img src="assets/mouseico.png"/> -->
                 </div>
         </div>
 </div>
@@ -82,7 +85,20 @@
                 
             </div>
             <div class="col-md-6">
-                <div class="correcionAncho">
+                    <div id="respuesta" class="ocultar" >
+                            <p>¡Gracias por contactarnos!<br>
+                                Pronto nos pondremos en contacto</p>
+
+                        <div class="row no-gutters">
+                                <div class="col-md-4">
+                                    <div class="">
+                                        <button  type="button" id="btnEnviarOtroMensaje" onclick="mostrarForm()">Enviar Otro Mensaje</button>
+                                    </div>                           
+                                 </div>                           
+                        </div>
+                    </div>
+                    
+                <div id="formulario" class="">
                     <div class="correccionAlto">
                         <p>Déjanos tus datos y hablemos de negocios.</p>
                     </div>
